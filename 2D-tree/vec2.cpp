@@ -11,6 +11,11 @@
 
 using namespace std;
 
+bool between (vec2 val, vec2 min, vec2 max)
+{
+    return (max.x >= val.x) && (max.y >= val.y) && (min.x <= val.x) && (min.y <= val.y);
+}
+
 bool compareX(vec2 a, vec2 b) {
     return a.x < b.x;
 }

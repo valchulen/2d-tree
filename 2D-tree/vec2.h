@@ -13,6 +13,8 @@ typedef struct {
     float x, y;
 } vec2;
 
+bool between(vec2 val, vec2 min, vec2 max);
+
 bool compareX( vec2 a, vec2 b);
 
 bool compareY( vec2 a, vec2 b);

@@ -19,7 +19,7 @@ bool tree::equal(float a, float b) {
     return (abs(a-b) / (abs(a)+abs(b))) < EPSILON;
 }
 
-float tree::distance(vec2 a, vec2 b){
+float tree::distance( const vec2 a, const vec2 b){
     return sqrt( pow(b.x-a.x, 2) + pow(b.y-a.y,  2) );
 }
 
@@ -72,16 +72,17 @@ nodo* tree::build(int depth, vec2 *arr, int size) {
     
 }
 
-bool tree::searchFor(vec2 val) {
+bool tree::searchFor( const vec2 val) {
      return _searchFor(0, &root, val);
 }
 
-bool tree::_searchFor(int depth, nodo* sub, vec2 val) {
+bool tree::_searchFor(int depth, nodo* sub, const vec2 val) {
     if ((equal(sub->p.x, val.x) && equal(sub->p.y, val.y))) {
         return true;
     } else {
         nodo* subtree = NULL;
         float cmp = 0, cmpVal = 0;
+        
         if (depth % 2 == 0) {
             cmp = sub->p.x;
             cmpVal = val.x;
@@ -89,24 +90,27 @@ bool tree::_searchFor(int depth, nodo* sub, vec2 val) {
             cmp = sub->p.y;
             cmpVal = val.y;
         }
+        
         if (cmpVal < cmp)
             subtree = sub->right;
         else
             subtree = sub->left;
         if (subtree ==  NULL)
             return false;
+        
         //cout<<"("<<sub->p.x<<", "<<sub->p.y<<")"<<endl;
         return _searchFor(depth+1, subtree, val);
     }
 }
 
-void tree::add(vec2 val) {
+void tree::add(const vec2 val) {
     _add(0, &root, val);
 }
 
-void tree::_add(int depth, nodo *sub, vec2 val) {
+void tree::_add(int depth, nodo *sub, const vec2 val) {
     nodo* subtree = NULL;
     float cmp = 0, cmpVal = 0;
+    
     if(depth % 2 == 0) {
         cmp = sub->p.x;
         cmpVal = val.x;
@@ -114,6 +118,7 @@ void tree::_add(int depth, nodo *sub, vec2 val) {
         cmp = sub->p.y;
         cmpVal = val.y;
     }
+    
     if (cmpVal < cmp){
         if (sub->right == NULL) {
             sub->right = new nodo;
@@ -133,16 +138,17 @@ void tree::_add(int depth, nodo *sub, vec2 val) {
         } else
             subtree = sub->left;
     }
+    
     _add(depth+1, subtree, val);
 }
 
-vector<vec2> tree::rangeSearch(vec2 start, vec2 end) {
+vector<vec2> tree::rangeSearch(const vec2 start, const vec2 end) {
     inRange.clear();
     _rangeSearch(0, &root, start, end);
     return inRange;
 }
 
-void tree::_rangeSearch(int depth, nodo *sub, vec2 min, vec2 max) {
+void tree::_rangeSearch(int depth, nodo *sub, const vec2 min, const vec2 max) {
     float cmp = 0, cmpMin = 0, cmpMax = 0;
     if (depth % 2 == 0) {
         cmp = sub->p.x;
@@ -154,42 +160,28 @@ void tree::_rangeSearch(int depth, nodo *sub, vec2 min, vec2 max) {
         cmpMax = max.y;
     }
     
-    if ((cmp > cmpMin) && (cmp > cmpMax)){
+    if ((cmp > cmpMin) && (cmp > cmpMax) && sub->right)
+        _rangeSearch(depth+1, sub->right, min, max);
+    else if ((cmp > cmpMin) && (cmp < cmpMax)) {
         if (sub->right)
             _rangeSearch(depth+1, sub->right, min, max);
-        else
-            return;
-    }
-    else if ((cmp > cmpMin) && (cmp < cmpMax)) {
-        inRange.push_back(sub->p);
-        bool ninguna = true;
-        if (sub->right) {
-            ninguna = false;
-            _rangeSearch(depth+1, sub->right, min, max);
-        }
-        if (sub->left) {
-            ninguna = false;
-            _rangeSearch(depth+1, sub->left, min, max);
-        }
-        if (ninguna)
-            return;
-    } else if ((cmp < cmpMin) && (cmp < cmpMax)) {
         if (sub->left)
             _rangeSearch(depth+1, sub->left, min, max);
-        else
-            return;
-    }
-
+    } else if ((cmp < cmpMin) && (cmp < cmpMax) && sub->left)
+        _rangeSearch(depth+1, sub->left, min, max);
+    
+    if (between(sub->p, min, max))
+        inRange.push_back(sub->p);
 }
 
-vec2 tree::closest(vec2 val) {
+vec2 tree::closest(const vec2 val) {
     minP = root.p;
     minDistance = distance(minP, val);
     _closest(0, &root, val);
     return minP;
 }
 
-void tree::_closest(int depth, nodo *sub, vec2 val) {
+void tree::_closest(int depth, nodo *sub, const vec2 val) {
     if ((equal(sub->p.x, val.x) && equal(sub->p.y, val.y))) {
         return;
     } else {
