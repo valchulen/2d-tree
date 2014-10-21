@@ -23,11 +23,11 @@ float tree::distance( const vec2 a, const vec2 b){
     return sqrt( pow(b.x-a.x, 2) + pow(b.y-a.y,  2) );
 }
 
-tree::tree(vec2 * arr, int size) {
+tree::tree(vec2 * arr, int size) { //lesto
     (*this).root = *build(0, arr, size);
 }
 //int indent = -1;
-nodo* tree::build(int depth, vec2 *arr, int size) {
+nodo* tree::build(int depth, vec2 *arr, int size) { //lesto
     //indent++;
     nodo* n = new nodo;
     
@@ -72,11 +72,11 @@ nodo* tree::build(int depth, vec2 *arr, int size) {
     
 }
 
-bool tree::searchFor( const vec2 val) {
+bool tree::searchFor( const vec2 val) { //lesto
      return _searchFor(0, &root, val);
 }
 
-bool tree::_searchFor(int depth, nodo* sub, const vec2 val) {
+bool tree::_searchFor(int depth, nodo* sub, const vec2 val) { //lesto
     if ((equal(sub->p.x, val.x) && equal(sub->p.y, val.y))) {
         return true;
     } else {
@@ -103,11 +103,11 @@ bool tree::_searchFor(int depth, nodo* sub, const vec2 val) {
     }
 }
 
-void tree::add(const vec2 val) {
+void tree::add(const vec2 val) { //lesto
     _add(0, &root, val);
 }
 
-void tree::_add(int depth, nodo *sub, const vec2 val) {
+void tree::_add(int depth, nodo *sub, const vec2 val) { //lesto
     nodo* subtree = NULL;
     float cmp = 0, cmpVal = 0;
     
@@ -174,14 +174,14 @@ void tree::_rangeSearch(int depth, nodo *sub, const vec2 min, const vec2 max) {
         inRange.push_back(sub->p);
 }
 
-vec2 tree::closest(const vec2 val) {
+vec2 tree::closest(const vec2 val) { //lesto
     minP = root.p;
     minDistance = distance(minP, val);
     _closest(0, &root, val);
     return minP;
 }
 
-void tree::_closest(int depth, nodo *sub, const vec2 val) {
+void tree::_closest(int depth, nodo *sub, const vec2 val) { //lesto
     if ((equal(sub->p.x, val.x) && equal(sub->p.y, val.y))) {
         return;
     } else {
